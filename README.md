@@ -4,5 +4,5 @@
     - prot2vec.py
     - tsne.py
    
-   ### Instructions:
-    1. Run tsne.py to view embeddings
+    ### Instructions:
+     1. Run tsne.py to view embeddings

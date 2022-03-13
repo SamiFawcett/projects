@@ -1,2 +1,2 @@
 # play_with_proteins
-protein to vector representation
+1. prot2vec.py - Protein Embeddings

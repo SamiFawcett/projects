@@ -75,6 +75,15 @@ class Sequence():
         else:
             raise StopIteration
 
+    def __len__(self):
+        return self.len
+
+    def get(self, i):
+        if i < len(self.kmers) and i >= 0:
+            return self.kmers[i]
+        else:
+            raise IndexError
+
 
 class NeuralNetwork(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim):
@@ -109,10 +118,52 @@ class PosNegSampler(torch.utils.data.IterableDataset):
         return self.size
 
     def __iter__(self):
-        pass
+        """
+        returns one iterable block of target context pairs with pos/neg labeling
+        """
+
+        for (i, (T, C)) in enumerate(self.pair_generator()):
+            posT = np.array(T)
+            posC = np.array(C)
+            posL = np.ones(len(T))
+            yield (posT, posC, posL)
+            for j in range(self.neg_samples):
+                negT = np.array(T)
+                negC = self.getNegWords(len(T))
+                negL = np.zeros(len(T))
+                yield (negT, negC, negL)
 
     def __next__(self):
         pass
+
+    def getNegWords(self, numOfNegWords):
+        return np.searchsorted(
+            self.sequenceData.cumsum, np.random.random(numOfNegWords))
+
+    def pair_generator(self):
+        T = []
+        C = []
+        for seq_idx, seq in enumerate(iter(self.sequenceData)):
+            for kmer_idx, kmer in enumerate(iter(seq)):
+
+                # create window
+                start_idx = max(0, kmer_idx - self.window_size)
+                end_idx = min(len(seq), kmer_idx + self.window_size + 1)
+
+                for window_idx in range(start_idx, end_idx):
+                    if kmer_idx != window_idx:
+                        T.append(self.sequenceData.kmer_to_index[kmer])
+                        C.append(
+                            self.sequenceData.kmer_to_index[seq.get(window_idx)])
+
+                if len(T) >= self.block_size:
+                    yield (T, C)
+                    T, C = [], []
+
+        # any remaining pairs must be returned
+        # in the case where there are not enough pairs to fill up a block
+        # just return them if we reached the end
+        yield (T, C)
 
 
 device = 'cuda' if torch.cuda.is_available() else "cpu"
@@ -126,10 +177,11 @@ neg_samples = 2
 S = SequenceData('..\data\small_uniprot.txt', 3)
 PNS = PosNegSampler(S, block_size, window_size, neg_samples)
 
-print(len(PNS))
-# model parameters
+
+"""
+#classification model parameters
 in_dim = 128
 hidden_dim = 768
 out_dim = 1
-
 model = NeuralNetwork(in_dim, hidden_dim, out_dim).to(device)
+"""

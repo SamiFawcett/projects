@@ -6,7 +6,7 @@
    
     Instructions:
      1. Run tsne.py to view embeddings
-     
+     2. If you use the reviewed-uniprot-lim_sequences.txt file
     If you want to run your own dataset:
      1. Change SequenceData dataset to your text file.
       a. line 1 = 'sequence'

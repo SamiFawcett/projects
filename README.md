@@ -37,4 +37,5 @@
          - Machine Responder model (TextGenerate)
          - Machine Interrogator model (MachineInterrogator)
          
-     - Used jokes dataset to train the interrogator on question responding. The interrogator was then asked to interpret a human completion of the joke vs a machine          completion of the joke.
+     - Used jokes dataset to train the interrogator on question responding. 
+        The interrogator was then asked to interpret a human completion of the joke vs a machine completion of the joke.

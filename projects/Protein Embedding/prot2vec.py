@@ -206,18 +206,18 @@ print(f"Using {device} device")
 
 # data arguments
 kmer = 3
-block_size = 256*256
-window_size = 10
-neg_samples = 2
-embedding_dim = 24
+block_size = 512*512
+window_size = 15
+neg_samples = 5
+embedding_dim = 100
 
 # training arguments
 batch_size = 1
 learning_rate = 0.01
-epochs = 2
+epochs = 20
 
 # read and create data
-S = SequenceData('..//..//data//uniprot.txt', 3)
+S = SequenceData('..//..//data//small_uniprot.txt', 3)
 PNS = PosNegSampler(S, block_size, window_size, neg_samples)
 V = len(PNS.sequenceData.vocab)
 print(f"vocab size: {V}")
